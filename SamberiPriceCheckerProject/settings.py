@@ -13,8 +13,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 
 from celery.schedules import crontab
+from env import POSTGRESQLPASSWORD, DJANGO_SK
 
-from env import POSTGRESQLPASSWORD
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^f+8q#e3oglwg)xu@)l%5&c!tm-h(y1#)gr)%ux94wi4ghp8bj'
+SECRET_KEY = DJANGO_SK
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'pricechecker.apps.PricecheckerConfig',
     'celery',
+    'redis',
 ]
 
 MIDDLEWARE = [
@@ -81,11 +82,11 @@ WSGI_APPLICATION = 'SamberiPriceCheckerProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pcdb',
+        'NAME': 'sbpc',
         'USER': 'onehandedpirate',
         'PASSWORD': POSTGRESQLPASSWORD,
-        'HOST': 'localhost',
-        'PORT': '5433',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
@@ -132,5 +133,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #Celery Settings
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_TIMEZONE = 'Asia/Vladivostok'
+
+CELERY_BEAT_SCHEDULE = {
+    'parse-every-night': {
+        'task': 'pricechecker.tasks.parse_data',
+        'schedule': crontab(hour=0, minute=0),
+    },
+}
 

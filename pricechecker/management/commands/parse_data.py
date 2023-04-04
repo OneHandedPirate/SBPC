@@ -61,9 +61,11 @@ async def main():
     print(f'Время выполнения: {round(time.time()-time_start, 2)}')
     print('Dump to DB complete...')
 
+
 class Command(BaseCommand):
     help = 'Parses data from Samberi shop and saves it to the database'
 
     def handle(self, *args, **options):
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        #Эта строка - для Windows
+        # asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         asyncio.run(main())

@@ -1,0 +1,8 @@
+FROM python:3.10-alpine3.17
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+CMD sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000 & celery -A SamberiPriceCheckerProject worker -l info -B"
+
+

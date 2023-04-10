@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 
 from celery.schedules import crontab
-from env import POSTGRESQLPASSWORD, DJANGO_SK
+from env import *
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,7 +29,7 @@ SECRET_KEY = DJANGO_SK
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 INSTALLED_APPS = [
@@ -82,13 +82,14 @@ WSGI_APPLICATION = 'SamberiPriceCheckerProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sbpc',
-        'USER': 'onehandedpirate',
-        'PASSWORD': POSTGRESQLPASSWORD,
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': POSTGRES_DB,
+        'USER': POSTGRES_USER,
+        'PASSWORD': POSTGRES_PASSWORD,
+        'HOST': POSTGRES_HOST,
+        'PORT': POSTGRES_PORT,
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -132,14 +133,14 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #Celery Settings
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
 CELERY_TIMEZONE = 'Asia/Vladivostok'
 
 CELERY_BEAT_SCHEDULE = {
     'parse-every-night': {
         'task': 'pricechecker.tasks.parse_data',
-        'schedule': crontab(hour=0, minute=0),
+        'schedule': crontab(hour=3, minute=00),
     },
 }
 

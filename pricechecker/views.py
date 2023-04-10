@@ -23,7 +23,6 @@ def get_prices(request):
     q = request.GET.get('q')
     product = Product.objects.get(name=q)
     results = Price.objects.filter(product_id=product).order_by('date')
-    print(*map(lambda x: x.date, results))
     data = {
             'name': f'{product.name}',
             'prices': [{'price': result.price, 'date': result.date.strftime('%d.%m.%Y')} for result in results]

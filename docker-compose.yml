@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+ db:
+  image: postgres
+  networks:
+   - mynet
+  environment:
+   POSTGRES_USER: ${POSTGRES_USER}
+   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+   POSTGRES_DB: ${POSTGRES_DB}
+  volumes:
+   - sbpc_db:${DB_VOLUME}
+ redis:
+  image: redis
+  networks:
+   - mynet
+ myapp:
+  image: sbpc_app
+  networks:
+   - mynet
+  ports:
+   - ${APP_PORT}:8000
+  depends_on:
+   - db
+   - redis
+  command: sh -c "sleep 10 && python manage.py migrate && python manage.py runserver 0.0.0.0:8000 & sh -c 'sleep 15 && echo Starting Celery && celery -A SamberiPriceCheckerProject worker -l info -B'"
+networks:
+ mynet:
+
+volumes:
+ sbpc_db:

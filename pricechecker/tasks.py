@@ -19,6 +19,7 @@ HEADERS = {
 
 @shared_task
 def parse_data():
+    start = Price.objects.all().count()
     print('Parsing data...')
     asyncio.set_event_loop(asyncio.new_event_loop())
 
@@ -60,5 +61,6 @@ def parse_data():
     time_start = time.time()
     asyncio.run(get_products(URL))
 
+    print(f'Цен добавлено в базу: {Price.objects.all().count() - start}')
     print(f'Время выполнения: {round(time.time()-time_start, 2)}')
     print('Dump to DB complete...')

@@ -27,7 +27,12 @@
 #### Запуск:
 
 Основное приложение: `manage.py runserver`
-Celery-воркер: `celery -A SamberiPriceCheckerProject worker -l info -B`
+
+Celery-воркер: 
+
+на Linux: `celery -A SamberiPriceCheckerProject worker -l info -B`
+
+на Windows: `celery -A SamberiPriceCheckerProject worker -l info` и `celery -A SamberiPriceCheckerProject beat -l info`
 
 #### Для проверки работоспособности парсера цен при поднятом сервере и работающем celery-воркере выполните следующие команды:
 

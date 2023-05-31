@@ -1,0 +1,11 @@
+{% if products %}
+    <ul class="list-group col-10 mx-auto">
+    {% for product in products %}
+        <span class="text-decoration-none" hx-get="{% url 'prices' product.pk %}" hx-target="#chart" style="cursor: pointer">
+            <li class="list-group-item text-center align-item-center">
+                {{ product.name }}
+            </li>
+        </span>
+    {% endfor %}
+    </ul>
+{% endif %}

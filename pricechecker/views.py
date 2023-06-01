@@ -1,16 +1,23 @@
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render
-
 
 from pricechecker.models import Product, Price
 
 
 def search_product(request):
-    query = request.POST.get('search-input')
-    results = []
+    query = request.GET.get('q')
+    product_list = []
     if query:
-        results = Product.objects.filter(name__icontains=query)
-    return render(request, 'pricechecker/search-results.html', {'products': results})
+        product_list = Product.objects.filter(name__icontains=query)
+
+    paginator = Paginator(product_list, 20)
+    page_number = request.GET.get('page', None)
+
+    if not page_number:
+        page_number = 1
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'pricechecker/search-results.html', {'products': page_obj, 'query': query})
 
 
 def search_form(request):

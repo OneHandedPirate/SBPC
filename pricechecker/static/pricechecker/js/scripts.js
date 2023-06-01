@@ -6,6 +6,7 @@ const searchInput = document.querySelector('#search-input')
 
 searchInput.addEventListener('input', event => {
     if (chart) {
+        chartElem.classList.add('d-none')
         chart.destroy()
     }
 
@@ -21,11 +22,12 @@ searchInput.addEventListener('input', event => {
 })
 chartElem.addEventListener('DOMSubtreeModified', event => {
     if (searchResults.innerHTML !== '') {
-    searchResults.innerHTML = '';
-    let data = JSON.parse(chartElem.innerHTML);
-    drawChart(data);
-    searchInput.value = ''
-    chartElem.innerHTML = ''
+        chartElem.classList.remove('d-none')
+        searchResults.innerHTML = '';
+        let data = JSON.parse(chartElem.innerHTML);
+        drawChart(data);
+        searchInput.value = ''
+        chartElem.innerHTML = ''
 }})
 
 function drawChart(data) {
@@ -88,4 +90,5 @@ function drawChart(data) {
         }
     });
 }
+
 
